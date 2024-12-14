@@ -62,17 +62,28 @@ public class FileSystem {
 
   public String ReadLast()
   {
-    System.out.println("READING FROM MEMORY...");
-    String answer = diskSpace.getLast();
-    System.out.println("SUCCESSFUL READ");
+    String answer = "";
+    if (!diskSpace.isEmpty())
+    {
+      answer = diskSpace.getLast();
+    }
+    else {
+      answer = "THERE IS NOTHING TO DELETE";
+    }
     return answer;
   }
 
   public void DeleteLast()
   {
-    System.out.println("DELETING FROM MEMORY...");
-    diskSpace.removeLast();
-    System.out.println("SUCCESSFULLY DELETED");
+    if (!diskSpace.isEmpty())
+    {
+      System.out.println("DELETING FROM MEMORY...");
+      diskSpace.removeLast();
+      System.out.println("SUCCESSFULLY DELETED");
+    }
+    else {
+      System.out.println("THERE IS NOTHING TO DELETE");
+    }
   }
 
   public void dir()
@@ -93,6 +104,11 @@ public class FileSystem {
   public int getLastIndex()
   {
     return blockCount - 1;
+  }
+
+  public String getDiskName()
+  {
+    return name;
   }
 
 }

@@ -4,16 +4,14 @@ public class Application {
   private String version;
   private String platform;
   private int ramUsage;
-  private boolean hasGui;
 
-  public Application(String name, String type, String version, String platform, int ramUsage, boolean hasGui)
+  public Application(String name, String type, String version, String platform, int ramUsage)
   {
     this.name = name;
     this.type = type;
     this.version = version;
     this.platform = platform;
     this.ramUsage = ramUsage;
-    this.hasGui = hasGui;
   }
 
   public void runApp()
@@ -51,6 +49,6 @@ public class Application {
   @Override
   public String toString()
   {
-    return "Application:\t"+ name + "\nversion:\t" + version + "\nplatform:\t" + platform + "\ngui:\t" + hasGui + "\n";
+    return "Application:\t"+ name + "\nversion:\t" + version + "\nplatform:\t" + platform + "\ngui:\t";
   }
 }

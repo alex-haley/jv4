@@ -36,7 +36,14 @@ public class SingleTaskOS extends OperatingSystem {
 
   public void list()
   {
-    disks.get(currentDisk).dir();
+    if (currentDisk < 0)
+    {
+      System.out.println("DISK NOT ATTACHED TO SYSTEM");
+      System.out.println("PLEASE CREATE A DISK FILESYSTEM");
+    }
+    else {
+      disks.get(currentDisk).dir();
+    }
   }
 
   public int getMem()
@@ -46,7 +53,45 @@ public class SingleTaskOS extends OperatingSystem {
 
   public int getDiskSize()
   {
-    return disks.getLast().getDiskSize();
+    if (currentDisk < 0)
+    {
+      return 0;
+    }
+    else {
+      return disks.getLast().getDiskSize();
+    }
+  }
+
+  public void getDisks()
+  {
+    int i = 0;
+    if (disks.isEmpty())
+    {
+      System.out.println("there is no disks initialized");
+    }
+    else {
+      for (FileSystem fs : disks)
+      {
+        System.out.println(i + " : " + disks.get(i).getDiskName());
+        i++;
+      }
+    }
+  }
+
+  public int countDisks()
+  {
+    int i = 0;
+    if (disks.isEmpty())
+    {
+      return i;
+    }
+    else {
+      for (FileSystem fs : disks)
+      {
+        i++;
+      }
+    }
+    return i;
   }
 
   @Override
@@ -55,18 +100,25 @@ public class SingleTaskOS extends OperatingSystem {
     if (app.getRamUsage() > taskMemory && !oskern.getMemoryIsolation())
     {
       System.out.println("CORE DUMP\nTRACE: 0f 0b 1b 03 50 d2 2b c0 e9 2a f7 ff ff b0 04 00 00 00 e8 e9\nWHY: BUFFER OVERFLOW\n");
+      System.exit(1);
     }
     else if (app.getRamUsage() > taskMemory && oskern.getMemoryIsolation())
     {
       System.out.println("TASK COULDNT BE INITIALIZED, ABORTING");
+      System.out.println("WHY: FOUND MEMORY LEAK");
     }
     else
     {
-      if (currentTask.isEmpty() && Objects.equals(app.getPlatform(), oskern.getKernelPlatform()))
+      if (currentTask == null && Objects.equals(app.getPlatform(), oskern.getKernelPlatform()))
       {
         currentTask = app.getName();
         System.out.println("TASK INITIALIZED:\t"+app.getName());
         disks.get(currentDisk).Write(app.getName());
+      }
+      else if (currentTask == null && !Objects.equals(app.getPlatform(), oskern.getKernelPlatform()))
+      {
+        System.out.println("THIS APP IS NOT SUPPORTED");
+        System.out.println("WHY: UNSUPPORTED PLATFORM DEFINITION");
       }
       else {
         System.out.println("COMPUTER IS BUSY\nTRY TO UNLOAD CURRENT TASK\nOR WAIT WHEN IT FINISHES");
