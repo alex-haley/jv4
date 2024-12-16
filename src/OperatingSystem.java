@@ -26,5 +26,6 @@ public abstract class OperatingSystem {
   }
 
   protected abstract void loadApplication(Application app);
+
   protected abstract void unloadApplication();
 }

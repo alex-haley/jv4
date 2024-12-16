@@ -5,190 +5,309 @@ import java.util.InputMismatchException;
 public class Menu {
     public static final Scanner scan = new Scanner(System.in);
     public static ArrayList<SingleTaskOS> SOSList = new ArrayList<>();
+    public static ArrayList<MultiTaskOS> MOSList = new ArrayList<>();
     public static ArrayList<Kernel> KernelList = new ArrayList<>();
     public static ArrayList<Application> AppList = new ArrayList<>();
 
     public static void home() {
-        System.out.println("OS Manager");
-        System.out.println("=========================");
-        System.out.println("1. Create OS");
-        System.out.println("2. Create App");
-        System.out.println("3. Create Kernel");
-        System.out.println("4. Load OS");
-        System.out.println("5. Kernel List");
-        System.out.println("6. OS List");
-        System.out.println("7. App List");
-        System.out.println("=========================");
-        System.out.println("8. exit");
+        while (true)
+        {
+            System.out.println("OS Manager");
+            System.out.println("=========================");
+            System.out.println("1. Create OS");
+            System.out.println("2. Create App");
+            System.out.println("3. Create Kernel");
+            System.out.println("4. Load OS");
+            System.out.println("5. Kernel List");
+            System.out.println("6. OS List");
+            System.out.println("7. App List");
+            System.out.println("=========================");
+            System.out.println("8. exit");
 
-        try {
-            System.out.print("\nchoose option: ");
-            int ch;
-            ch = scan.nextInt();
-            switch (ch) {
-                case 1:
-                    createOS();
-                    break;
-                case 2:
-                    createApp();
-                    break;
-                case 3:
-                    createKernel();
-                    break;
-                case 4:
-                    loadOS();
-                    break;
-                case 5:
-                    listKernel();
-                    break;
-                case 6:
-                    listOS();
-                case 7:
-                    listApp();
-                case 8:
-                    return;
-                default:
-                    home();
+            try {
+                System.out.print("\nchoose option: ");
+                int ch;
+                ch = scan.nextInt();
+                switch (ch) {
+                    case 1:
+                        createOS();
+                        break;
+                    case 2:
+                        createApp();
+                        break;
+                    case 3:
+                        createKernel();
+                        break;
+                    case 4:
+                        loadOS();
+                        break;
+                    case 5:
+                        listKernel();
+                        break;
+                    case 6:
+                        listOS();
+                        break;
+                    case 7:
+                        listApp();
+                        break;
+                    case 8:
+                        return;
+                }
+            } catch (InputMismatchException i) {
+                System.out.println("\nInvalid input\n");
+                scan.next();
             }
-        } catch (InputMismatchException i) {
-            System.out.println("Invalid input");
-            scan.next();
-            home();
         }
     }
 
     public static void showInterface(SingleTaskOS os) {
-        System.out.println("OS BOOTED: " + os.getName());
-        System.out.println("===================");
-        System.out.println("1. dir");
-        System.out.println("2. load application");
-        System.out.println("3. unload application");
-        System.out.println("4. check disk");
-        System.out.println("5. add disk");
-        System.out.println("6. change disk");
-        System.out.println("7. run application");
-        System.out.println("8. poweroff");
-        try {
-            System.out.print("> ");
-            int ch;
-            ch = scan.nextInt();
-            switch (ch)
-            {
-                case 1:
-                    os.list();
-                    showInterface(os);
-                    break;
-                case 2:
-                    if (!AppList.isEmpty())
-                    {
-                        int i = 0;
-                        for (Application a : AppList)
+        while (true)
+        {
+            System.out.println("OS BOOTED: " + os.getName());
+            System.out.println("===================");
+            System.out.println("1. dir");
+            System.out.println("2. load application");
+            System.out.println("3. unload application");
+            System.out.println("4. check disk");
+            System.out.println("5. add disk");
+            System.out.println("6. change disk");
+            System.out.println("7. run application");
+            System.out.println("8. poweroff");
+            try {
+                System.out.print("> ");
+                int ch;
+                ch = scan.nextInt();
+                switch (ch)
+                {
+                    case 1:
+                        os.list();
+                        break;
+                    case 2:
+                        if (!AppList.isEmpty())
                         {
-                            System.out.println(i + " : " + AppList.get(i).getName());
-                            i++;
+                            int i = 0;
+                            for (Application a : AppList)
+                            {
+                                System.out.println(i + " : " + AppList.get(i).getName());
+                                i++;
+                            }
+                            System.out.println(" ");
                         }
-                        System.out.println(" ");
-                    }
 
-                    int app;
-                    Application App;
-                    System.out.println("> which application?");
-                    apploop:
-                    while (true)
-                    {
-                        System.out.print("> ");
-                        app = scan.nextInt();
-                        if (app > -1 || app <= AppList.size())
-                        {
-                            App = AppList.get(app);
-                            break;
-                        }
-                        continue apploop;
-                    }
-
-                    os.loadApplication(App);
-                    showInterface(os);
-                    break;
-                case 3:
-                    os.unloadApplication();
-                    showInterface(os);
-                    break;
-                case 4:
-                    System.out.println("Heap size: " + os.getMem());
-                    System.out.println("Disk size: " + os.getDiskSize());
-                    showInterface(os);
-                    break;
-                case 5:
-                    System.out.print("NAME: ");
-                    String name =  scan.next();
-                    System.out.print("MAXLEN: ");
-                    int maxLen = scan.nextInt();
-                    System.out.print("BLOCKSIZE: ");
-                    int blockSize = scan.nextInt();
-                    os.addDisk(name,maxLen,blockSize);
-                    System.out.println("\nNEW DISK FILESYSTEM INITIALIZED\n");
-                    showInterface(os);
-                    break;
-                case 6:
-                    os.getDisks();
-                    System.out.print("(choose disk)> ");
-                    int disk = -1;
-                    while (true)
-                    {
-                        disk = scan.nextInt();
-                        if (disk > -1 || disk <= os.countDisks())
-                        {
-                            os.changeDisk(disk);
-                            break;
-                        }
-                    }
-                    showInterface(os);
-                    break;
-                case 7:
-                    if (!AppList.isEmpty())
-                    {
-                        int i = 0;
-                        for (Application a : AppList)
-                        {
-                            System.out.println(i + " : " + AppList.get(i).getName());
-                            i++;
-                        }
-                        System.out.println(" ");
-                        System.out.print("choose app to run: ");
-                        int apprun = 0;
-
+                        int app;
+                        Application App;
+                        System.out.println("> which application?");
                         apploop:
                         while (true)
                         {
-                            try {
-                                apprun = scan.nextInt();
-                                if (apprun > 0 || apprun <= AppList.size())
+                            System.out.print("> ");
+                            app = scan.nextInt();
+                            if (app > -1 || app <= AppList.size())
+                            {
+                                App = AppList.get(app);
+                                break;
+                            }
+                            continue apploop;
+                        }
+
+                        os.loadApplication(App);
+                        break;
+                    case 3:
+                        os.unloadApplication();
+                        break;
+                    case 4:
+                        System.out.println("Heap size: " + os.getMem());
+                        System.out.println("Disk size: " + os.getDiskSize());
+                        break;
+                    case 5:
+                        System.out.print("NAME: ");
+                        String name =  scan.next();
+                        System.out.print("MAXLEN: ");
+                        int maxLen = scan.nextInt();
+                        System.out.print("BLOCKSIZE: ");
+                        int blockSize = scan.nextInt();
+                        os.addDisk(name,maxLen,blockSize);
+                        System.out.println("\nNEW DISK FILESYSTEM INITIALIZED\n");
+                        break;
+                    case 6:
+                        os.getDisks();
+                        System.out.print("(choose disk)> ");
+                        int disk = -1;
+                        while (true)
+                        {
+                            disk = scan.nextInt();
+                            if (disk > -1 || disk <= os.countDisks())
+                            {
+                                os.changeDisk(disk);
+                                break;
+                            }
+                        }
+                        break;
+                    case 7:
+                        if (!AppList.isEmpty())
+                        {
+                            int i = 0;
+                            for (Application a : AppList)
+                            {
+                                System.out.println(i + " : " + AppList.get(i).getName());
+                                i++;
+                            }
+                            System.out.println(" ");
+                            System.out.print("choose app to run: ");
+                            int apprun = 0;
+
+                            apploop:
+                            while (true)
+                            {
+                                try {
+                                    apprun = scan.nextInt();
+                                    if (apprun > 0 || apprun <= AppList.size())
+                                    {
+                                        break;
+                                    }
+                                } catch (InputMismatchException in) {
+                                    scan.next();
+                                    continue apploop;
+                                }
+                            }
+                            os.runApplication(AppList.get(apprun));
+                        }
+                        else {
+                            System.out.println("\nTHERE IS NO APPLICATION TO RUN\n");
+                        }
+                        break;
+                    case 8:
+                        return;
+                }
+            } catch (InputMismatchException i) {
+                System.out.println("\nInvalid input\n");
+                scan.next();
+            }
+        }
+    }
+
+    public static void showInterface(MultiTaskOS os) {
+        while (true)
+        {
+            System.out.println("OS BOOTED: " + os.getName());
+            System.out.println("===================");
+            System.out.println("1. dir");
+            System.out.println("2. load application");
+            System.out.println("3. unload application");
+            System.out.println("4. check disk");
+            System.out.println("5. add disk");
+            System.out.println("6. change disk");
+            System.out.println("7. run application");
+            System.out.println("8. poweroff");
+            try {
+                System.out.print("> ");
+                int ch;
+                ch = scan.nextInt();
+                switch (ch)
+                {
+                    case 1:
+                        os.list();
+                        break;
+                    case 2:
+                        if (os.getDiskSize() > 0)
+                        {
+                            if (!AppList.isEmpty())
+                            {
+                                int i = 0;
+                                for (Application a : AppList)
+                                {
+                                    System.out.println(i + " : " + AppList.get(i).getName());
+                                    i++;
+                                }
+                                System.out.println(" ");
+                            }
+
+                            int app;
+                            Application App;
+                            System.out.println("> which application?");
+                            apploop:
+                            while (true)
+                            {
+                                System.out.print("> ");
+                                app = scan.nextInt();
+                                if (app > -1 || app <= AppList.size())
+                                {
+                                    App = AppList.get(app);
+                                    break;
+                                }
+                                continue apploop;
+                            }
+
+                            os.loadApplication(App);
+                            break;
+                        }
+                        else {
+                            System.out.println("THERE IS NO DISK IN THE SYSTEM");
+                            break;
+                        }
+                    case 3:
+                        os.unloadApplication();
+                        break;
+                    case 4:
+                        System.out.println("Heap size: " + os.getMem());
+                        System.out.println("Disk size: " + os.getDiskSize());
+                        break;
+                    case 5:
+                        System.out.print("NAME: ");
+                        String name =  scan.next();
+                        System.out.print("MAXLEN: ");
+                        int maxLen = scan.nextInt();
+                        System.out.print("BLOCKSIZE: ");
+                        int blockSize = scan.nextInt();
+                        os.addDisk(name,maxLen,blockSize);
+                        System.out.println("\nNEW DISK FILESYSTEM INITIALIZED\n");
+                        break;
+                    case 6:
+                        os.getDisks();
+                        System.out.print("(choose disk)> ");
+                        int disk = -1;
+                        while (true)
+                        {
+                            disk = scan.nextInt();
+                            if (disk > -1 || disk <= os.countDisks())
+                            {
+                                os.changeDisk(disk);
+                                break;
+                            }
+                        }
+                        break;
+                    case 7:
+                        os.loadedApps();
+                        if (os.countSpace() > 0)
+                        {
+                            int apps;
+                            System.out.println("> which application?");
+                            apploop:
+                            while (true)
+                            {
+                                System.out.print("> ");
+                                apps = scan.nextInt();
+                                if (apps > -1 || apps <= os.countSpace())
                                 {
                                     break;
                                 }
-                            } catch (InputMismatchException in) {
-                                scan.next();
                                 continue apploop;
                             }
-                        }
-                        os.runApplication(AppList.get(apprun));
-                        showInterface(os);
-                    }
-                    else {
-                        System.out.println("\nTHERE IS NO APPLICATION TO RUN\n");
-                        showInterface(os);
-                    }
-                    break;
-                case 8:
-                    return;
-                default:
-                    showInterface(os);
 
+                            os.runApplication(os.getApp(apps));
+                            break;
+                        }
+                        else {
+                            System.out.println("THERE IS NO DISK ATTACHED TO SYSTEM");
+                            break;
+                        }
+                    case 8:
+                        return;
+                }
+            } catch (InputMismatchException i) {
+                System.out.println("\nInvalid input\n");
+                scan.next();
             }
-        } catch (InputMismatchException i) {
-            System.out.println("Invalid input");
-            scan.next();
-            showInterface(os);
         }
     }
 
@@ -205,7 +324,7 @@ public class Menu {
             try {
                 System.out.print("choose option: ");
                 ch = scan.nextInt();
-                if (ch > 0 || ch < 3)
+                if (ch > -1 || ch < 3)
                 {
                     break;
                 }
@@ -217,33 +336,13 @@ public class Menu {
         }
 
         switch (ch) {
+            case 0:
+                return;
             case 1:
                 System.out.print("name of the new OS: ");
                 String name = scan.next();
                 System.out.print("version: ");
                 String ver = scan.next();
-                String arch;
-
-                kernloop:
-                while (true)
-                {
-                    try {
-                        System.out.println("kernel arch: ");
-                        System.out.println("1. Monolitic");
-                        System.out.println("2. Micro");
-                        int kernarch = scan.nextInt();
-                        if (kernarch == 1) {
-                            arch = "Monolitic";
-                            break;
-                        } else if (kernarch == 2) {
-                            arch = "Micro";
-                            break;
-                        }
-                    } catch (InputMismatchException i) {
-                        scan.next();
-                        continue kernloop;
-                    }
-                }
 
                 int tMem = 0;
                 mloop:
@@ -288,18 +387,72 @@ public class Menu {
                 }
                 else {
                     System.out.println("there is no kernel created. initializing a fast-create script...");
-                    kern = new Kernel(name,arch,true,name,"x86-64");
+                    kern = new Kernel(name,"Monolitic",true,name,"x86-64");
                     KernelList.add(kern);
                 }
 
-                SingleTaskOS sos = new SingleTaskOS(name, ver, arch, kern, tMem);
+                SingleTaskOS sos = new SingleTaskOS(name, ver, kern.getKernelArchitecture(), kern, tMem);
                 SOSList.add(sos);
                 System.out.println("\nSingleTaskOS has been created\n");
-                home();
-                break;
+                return;
 
             case 2:
-                break;
+                System.out.print("name of the new OS: ");
+                String mname = scan.next();
+                System.out.print("version: ");
+                String mver = scan.next();
+
+                int mtMem = 0;
+                mloop:
+                while (true)
+                {
+                    try {
+                        System.out.print("max memory for task: ");
+                        mtMem = scan.nextInt();
+                    } catch (InputMismatchException i) {
+                        scan.next();
+                        continue mloop;
+                    }
+                    break;
+                }
+
+                System.out.print("Choose kernel: ");
+                int mk = -1;
+                Kernel mkern;
+                if (!KernelList.isEmpty())
+                {
+                    int i = 0;
+                    for (Kernel ke : KernelList)
+                    {
+                        System.out.println(i + " : " + KernelList.get(i).getName());
+                        i++;
+                    }
+                    System.out.println(" ");
+                    System.out.print("? ");
+                    mk = scan.nextInt();
+                    while (true)
+                    {
+                        if (mk < 0 || mk > KernelList.size())
+                        {
+                            System.out.print("? ");
+                            mk = scan.nextInt();
+                        }
+                        else {
+                            mkern = KernelList.get(mk);
+                            break;
+                        }
+                    }
+                }
+                else {
+                    System.out.println("there is no kernel created. initializing a fast-create script...");
+                    mkern = new Kernel(mname,"Monolitic",true,mname,"x86-64");
+                    KernelList.add(mkern);
+                }
+
+                MultiTaskOS mos = new MultiTaskOS(mname, mver, mkern.getKernelArchitecture(), mkern, mtMem);
+                MOSList.add(mos);
+                System.out.println("\nMultiTaskOS has been created\n");
+                return;
             default:
                 createOS();
         }
@@ -370,7 +523,7 @@ public class Menu {
             }
             Kernel kern = new Kernel(name, arch, memiso, kernlib, kernplat);
             KernelList.add(kern);
-            home();
+            return;
 
         } catch (InputMismatchException i) {
             System.out.println("Invalid input");
@@ -384,42 +537,78 @@ public class Menu {
         System.out.println("\nOS type: ");
         System.out.println("1. SingleTask");
         System.out.println("2. MultiTask");
+        System.out.println("0 for exit");
         int ch;
-        System.out.print("choose option: ");
-        ch = scan.nextInt();
-        switch (ch)
+
+        chos:
+        while (true)
         {
-            case 1:
-                if (!SOSList.isEmpty()) {
-                    int i = 0;
-                    for (OperatingSystem s : SOSList) {
-                        System.out.println(i + " : " + SOSList.get(i).getName());
-                        i++;
-                    }
-                    System.out.println(" ");
-                    System.out.println("which OS to load?");
-                    int chu;
-                    SingleTaskOS sos;
-                    while (true) {
-                        System.out.print(": ");
-                        chu = scan.nextInt();
-                        if (chu > 0 || chu <= SOSList.size()) {
-                            sos = SOSList.get(chu);
-                            showInterface(sos);
-                            break;
+            try {
+                System.out.print("choose option: ");
+                ch = scan.nextInt();
+                switch (ch)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        if (!SOSList.isEmpty()) {
+                            int i = 0;
+                            for (OperatingSystem s : SOSList) {
+                                System.out.println(i + " : " + SOSList.get(i).getName());
+                                i++;
+                            }
+                            System.out.println(" ");
+                            System.out.println("which OS to load?");
+                            int chu;
+                            SingleTaskOS sos;
+                            while (true) {
+                                System.out.print(": ");
+                                chu = scan.nextInt();
+                                if (chu > 0 || chu <= SOSList.size()) {
+                                    sos = SOSList.get(chu);
+                                    showInterface(sos);
+                                    break;
+                                }
+                            }
                         }
-                    }
+                        else {
+                            System.out.println("there is no OS created");
+                            return;
+                        }
+                    case 2:
+                        if (!MOSList.isEmpty()) {
+                            int i = 0;
+                            for (OperatingSystem m : MOSList) {
+                                System.out.println(i + " : " + MOSList.get(i).getName());
+                                i++;
+                            }
+                            System.out.println(" ");
+                            System.out.println("which OS to load?");
+                            int chu;
+                            MultiTaskOS mos;
+                            while (true) {
+                                System.out.print(": ");
+                                chu = scan.nextInt();
+                                if (chu > 0 || chu <= MOSList.size()) {
+                                    mos = MOSList.get(chu);
+                                    showInterface(mos);
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            System.out.println("there is no OS created");
+                            return;
+                        }
                 }
-                else {
-                    System.out.println("there is no OS created");
-                    home();
-                    break;
-                }
-            case 2:
-                break;
-            default:
-                loadOS();
+            } catch (InputMismatchException ixc) {
+                scan.next();
+                continue chos;
+            }
+
         }
+
+
 
     }
 
@@ -514,30 +703,57 @@ public class Menu {
 
         Application app = new Application(name, type, version, platform, ramus);
         AppList.add(app);
-        home();
+        return;
     }
 
     public static void listOS()
     {
+        System.out.println(" ");
         if (!SOSList.isEmpty())
         {
             int i = 0;
+            System.out.println("SingeTaskOS:");
             for (OperatingSystem s : SOSList)
             {
                 System.out.println(i + " : " + SOSList.get(i).getName());
                 i++;
             }
             System.out.println(" ");
-            home();
+
+            if (!MOSList.isEmpty())
+            {
+                int v = 0;
+                System.out.println("MultiTaskOS:");
+                for (OperatingSystem m : MOSList)
+                {
+                    System.out.println(v + " : " + MOSList.get(v).getName());
+                    v++;
+                }
+                System.out.println(" ");
+                return;
+            }
+        }
+        else if (!MOSList.isEmpty())
+        {
+            int v = 0;
+            System.out.println("MultiTaskOS:");
+            for (OperatingSystem m : MOSList)
+            {
+                System.out.println(v + " : " + MOSList.get(v).getName());
+                v++;
+            }
+            System.out.println(" ");
+            return;
         }
         else {
             System.out.println("\nthere is no OS created\n");
-            home();
+            return;
         }
     }
 
     public static void listApp()
     {
+        System.out.println(" ");
         if (!AppList.isEmpty())
         {
             int i = 0;
@@ -547,14 +763,15 @@ public class Menu {
                 i++;
             }
             System.out.println(" ");
-            home();
+            return;
         }
         System.out.println("\nthere is no app created\n");
-        home();
+        return;
     }
 
     public static void listKernel()
     {
+        System.out.println(" ");
         if (!KernelList.isEmpty())
         {
             int i = 0;
@@ -564,11 +781,11 @@ public class Menu {
                 i++;
             }
             System.out.println(" ");
-            home();
+            return;
         }
         else {
             System.out.println("\nThere is no kernel created\n");
-            home();
+            return;
         }
     }
 }

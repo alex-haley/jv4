@@ -42,7 +42,7 @@ public class SingleTaskOS extends OperatingSystem {
       System.out.println("PLEASE CREATE A DISK FILESYSTEM");
     }
     else {
-      disks.get(currentDisk).dir();
+      disks.get(currentDisk).getDiskSpace();
     }
   }
 

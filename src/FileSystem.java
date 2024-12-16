@@ -18,6 +18,21 @@ public class FileSystem {
     diskSpace = new ArrayList<String>(numOfBlocks);
   }
 
+  public int Find(String app)
+  {
+    System.out.println("TRYING TO FIND: " + app);
+    int i = 0;
+    for (String a : diskSpace)
+    {
+      if (diskSpace.get(i).equals(app))
+      {
+        System.out.println("FOUNDED: " + app);
+        return i;
+      }
+    }
+    return i;
+  }
+
   public void Write(String record)
   {
     System.out.println("WRITING TO MEMORY...");
@@ -86,14 +101,36 @@ public class FileSystem {
     }
   }
 
-  public void dir()
+  public void getDiskSpace()
+  {
+    if (!diskSpace.isEmpty())
+    {
+      int i = 0;
+      for (String s : diskSpace)
+      {
+        System.out.println(i + " : " + diskSpace.get(i));
+        i++;
+      }
+    }
+    else {
+      System.out.println("there is no loaded apps");
+    }
+  }
+
+  public int getDiskSpaceCount()
   {
     int i = 0;
-    for (String s : diskSpace)
+    if (!diskSpace.isEmpty())
     {
-      System.out.println("-rw-r--r-- " + diskSpace.get(i));
-      i++;
+      for (String s : diskSpace)
+      {
+        i++;
+      }
     }
+    else {
+      System.out.println("there is no loaded apps");
+    }
+    return i;
   }
 
   public int getDiskSize()
