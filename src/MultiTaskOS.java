@@ -4,7 +4,7 @@ import java.util.Objects;
 public class MultiTaskOS extends OperatingSystem {
     private ArrayList<Application> currentTask;
     private int currentDisk = -1;
-    private int taskMemory;
+    int taskMemory;
     private ArrayList<FileSystem> disks = new ArrayList<>();
 
     public MultiTaskOS(String name, String version, String architecture, Kernel oskern, int taskMemory)

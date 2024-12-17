@@ -2,26 +2,19 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-public class NetworkOS extends OperatingSystem implements Networking {
+public class NetworkOS extends MultiTaskOS implements Networking {
     private ArrayList<Integer> addresses = new ArrayList<>();
-    private boolean autoAddress;
     private int address;
     private ArrayList<Application> currentTask;
     private int currentDisk = -1;
-    private int taskMemory;
     private ArrayList<FileSystem> disks = new ArrayList<>();
 
     public NetworkOS(String name, String version, String architecture, Kernel oskern, int taskMemory, boolean autoAddress) {
-        super(name, version, architecture, oskern);
-        this.taskMemory = taskMemory;
+        super(name, version, architecture, oskern, taskMemory);
         currentTask = new ArrayList<>(taskMemory);
-        this.autoAddress = autoAddress;
 
-        if (autoAddress)
-        {
-            Random rnd = new Random();
-            address = 1000 + rnd.nextInt(10000);
-        }
+        Random rnd = new Random();
+        address = 1000 + rnd.nextInt(10000);
     }
 
     public int generateAddress()
@@ -29,6 +22,16 @@ public class NetworkOS extends OperatingSystem implements Networking {
         Random rnd = new Random();
         int addr = 1000 + rnd.nextInt(10000);
         return addr;
+    }
+
+    public void viewCurTask()
+    {
+        int x = 0;
+        for (Application app : currentTask)
+        {
+            System.out.println(x + " : " + currentTask.get(x).getName());
+            x++;
+        }
     }
 
     public void addDisk(String name, int maxLen, int blockSize)
@@ -145,32 +148,50 @@ public class NetworkOS extends OperatingSystem implements Networking {
         return address;
     }
 
-    @Override
-    public void connect(int address) {
-        int v = 0;
-        for (int i : addresses)
+    public int countTasks()
+    {
+        int answ = 0;
+        for (Application app : currentTask)
         {
-            if (addresses.get(v) == address) {
-                break;
-            }
-            v++;
+            answ++;
         }
-        addresses.add(address);
+        return answ;
     }
 
     @Override
-    public Application send(Application app, int osindex) {
-        int v = 0;
-        Application appli = null;
-        for (int i : addresses)
+    public void connect(int indx) {
+        if (OSlib.NOSList.get(indx).getAddress() == address)
         {
-            if (v == osindex)
-            {
-                appli = app;
-            }
-            v++;
+            System.out.println("\nThat is you\n");
+            return;
         }
-        return appli;
+        else {
+            int adr = OSlib.NOSList.get(indx).getAddress();
+            addresses.add(adr);
+            System.out.println("SUCCESSFULLY CONNECTED");
+            return;
+        }
+    }
+
+    @Override
+    public void send(int indx, Application app) {
+        int x = 0;
+        for (int adr : addresses)
+        {
+            if (OSlib.NOSList.get(indx).getAddress() == addresses.get(x))
+            {
+                if (OSlib.NOSList.get(indx).getAddress() == address)
+                {
+                    System.out.println("\nThat is you\n");
+                    return;
+                }
+                else {
+                    OSlib.NOSList.get(indx).loadApplication(app);
+                    System.out.println("SUCCESSFULLY SENDED");
+                }
+            }
+            x++;
+        }
     }
 
     @Override

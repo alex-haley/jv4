@@ -3,6 +3,8 @@ public abstract class OperatingSystem {
   protected String version;
   protected String architecture;
   protected Kernel oskern;
+  protected int ostype;
+  // 0 - SingleTask ; 1 - MultiTask ; 2 - NetworkOS
 
   public OperatingSystem(String name, String version, String architecture, Kernel oskern)
   {
@@ -18,6 +20,16 @@ public abstract class OperatingSystem {
     System.out.println("version:\t"+version);
     System.out.println("arch:\t"+architecture);
     System.out.println("kernel:\t"+oskern.getName());
+  }
+
+  public void setOSType(int ost)
+  {
+    ostype = ost;
+  }
+
+  public int getOSType()
+  {
+    return ostype;
   }
 
   public String getName()
