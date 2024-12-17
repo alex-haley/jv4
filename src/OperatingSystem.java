@@ -28,4 +28,6 @@ public abstract class OperatingSystem {
   protected abstract void loadApplication(Application app);
 
   protected abstract void unloadApplication();
+
+  protected abstract void runApplication(Application app);
 }

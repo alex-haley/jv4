@@ -140,6 +140,7 @@ public class SingleTaskOS extends OperatingSystem {
     }
   }
 
+  @Override
   public void runApplication(Application app)
   {
     if (currentTask.equals(disks.get(currentDisk).ReadLast()) && Objects.equals(app.getPlatform(), oskern.getKernelPlatform()))

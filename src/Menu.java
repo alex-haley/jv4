@@ -2,12 +2,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
+// need to write logic for NetworkOS!!!
+
 public class Menu {
     public static final Scanner scan = new Scanner(System.in);
     public static ArrayList<SingleTaskOS> SOSList = new ArrayList<>();
     public static ArrayList<MultiTaskOS> MOSList = new ArrayList<>();
     public static ArrayList<Kernel> KernelList = new ArrayList<>();
     public static ArrayList<Application> AppList = new ArrayList<>();
+    public static ArrayList<NetworkOS> NOSList = new ArrayList<>();
 
     public static void home() {
         while (true)
@@ -316,6 +319,7 @@ public class Menu {
         System.out.println("\nOS type: ");
         System.out.println("1. SingleTask");
         System.out.println("2. MultiTask");
+        System.out.println("3. NetworkOS");
         int ch = 0;
 
         chloop:
@@ -324,7 +328,7 @@ public class Menu {
             try {
                 System.out.print("choose option: ");
                 ch = scan.nextInt();
-                if (ch > -1 || ch < 3)
+                if (ch > -1 || ch < 4)
                 {
                     break;
                 }
@@ -453,6 +457,65 @@ public class Menu {
                 MOSList.add(mos);
                 System.out.println("\nMultiTaskOS has been created\n");
                 return;
+            case 3:
+                System.out.print("name of the new OS: ");
+                String nname = scan.next();
+                System.out.print("version: ");
+                String nver = scan.next();
+
+                int ntMem = 0;
+                mloop:
+                while (true)
+                {
+                    try {
+                        System.out.print("max memory for task: ");
+                        ntMem = scan.nextInt();
+                    } catch (InputMismatchException i) {
+                        scan.next();
+                        continue mloop;
+                    }
+                    break;
+                }
+
+                boolean isAuto = true;
+
+                System.out.print("Choose kernel: ");
+                int nk = -1;
+                Kernel nkern;
+                if (!KernelList.isEmpty())
+                {
+                    int i = 0;
+                    for (Kernel ke : KernelList)
+                    {
+                        System.out.println(i + " : " + KernelList.get(i).getName());
+                        i++;
+                    }
+                    System.out.println(" ");
+                    System.out.print("? ");
+                    nk = scan.nextInt();
+                    while (true)
+                    {
+                        if (nk < 0 || nk > KernelList.size())
+                        {
+                            System.out.print("? ");
+                            nk = scan.nextInt();
+                        }
+                        else {
+                            nkern = KernelList.get(nk);
+                            break;
+                        }
+                    }
+                }
+                else {
+                    System.out.println("there is no kernel created. initializing a fast-create script...");
+                    nkern = new Kernel(nname,"Monolitic",true,nname,"x86-64");
+                    KernelList.add(nkern);
+                }
+
+                NetworkOS nos = new NetworkOS(nname, nver, nkern.getKernelArchitecture(), nkern, ntMem, isAuto);
+                NOSList.add(nos);
+                System.out.println("\nNetworkOS has been created\n");
+                return;
             default:
                 createOS();
         }
@@ -537,6 +600,7 @@ public class Menu {
         System.out.println("\nOS type: ");
         System.out.println("1. SingleTask");
         System.out.println("2. MultiTask");
+        System.out.println("3. Networking");
         System.out.println("0 for exit");
         int ch;
 
@@ -600,6 +664,31 @@ public class Menu {
                             System.out.println("there is no OS created");
                             return;
                         }
+                    case 3:
+                        if (!NOSList.isEmpty()) {
+                            int i = 0;
+                            for (OperatingSystem n : NOSList) {
+                                System.out.println(i + " : " + MOSList.get(i).getName());
+                                i++;
+                            }
+                            System.out.println(" ");
+                            System.out.println("which OS to load?");
+                            int chu;
+                            MultiTaskOS mos;
+                            while (true) {
+                                System.out.print(": ");
+                                chu = scan.nextInt();
+                                if (chu > 0 || chu <= MOSList.size()) {
+                                    mos = MOSList.get(chu);
+                                    showInterface(mos);
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            System.out.println("there is no OS created");
+                            return;
+                        }
                 }
             } catch (InputMismatchException ixc) {
                 scan.next();
@@ -616,9 +705,8 @@ public class Menu {
     {
         System.out.print("name: ");
         String name = scan.next();
-        String type = "smth";
+        String type;
         int ch;
-        int controller = -1;
 
         typeloop:
         while (true)
@@ -730,8 +818,18 @@ public class Menu {
                     v++;
                 }
                 System.out.println(" ");
-                return;
             }
+
+            if (!NOSList.isEmpty()) {
+                int f = 0;
+                System.out.println("NetworkOS:");
+                for (OperatingSystem n : NOSList) {
+                    System.out.println(f + " : " + NOSList.get(f).getName());
+                    f++;
+                }
+                System.out.println(" ");
+            }
+            return;
         }
         else if (!MOSList.isEmpty())
         {
@@ -741,6 +839,27 @@ public class Menu {
             {
                 System.out.println(v + " : " + MOSList.get(v).getName());
                 v++;
+            }
+            System.out.println(" ");
+
+            if (!NOSList.isEmpty()) {
+                int f = 0;
+                System.out.println("NetworkOS:");
+                for (OperatingSystem n : NOSList) {
+                    System.out.println(f + " : " + NOSList.get(f).getName());
+                    f++;
+                }
+                System.out.println(" ");
+                return;
+            }
+        }
+        else if (!NOSList.isEmpty())
+        {
+            int f = 0;
+            System.out.println("NetworkOS:");
+            for (OperatingSystem n : NOSList) {
+                System.out.println(f + " : " + NOSList.get(f).getName());
+                f++;
             }
             System.out.println(" ");
             return;

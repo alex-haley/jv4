@@ -1,17 +1,34 @@
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
-public class MultiTaskOS extends OperatingSystem {
+public class NetworkOS extends OperatingSystem implements Networking {
+    private ArrayList<Integer> addresses = new ArrayList<>();
+    private boolean autoAddress;
+    private int address;
     private ArrayList<Application> currentTask;
     private int currentDisk = -1;
     private int taskMemory;
     private ArrayList<FileSystem> disks = new ArrayList<>();
 
-    public MultiTaskOS(String name, String version, String architecture, Kernel oskern, int taskMemory)
-    {
-        super(name,version,architecture,oskern);
+    public NetworkOS(String name, String version, String architecture, Kernel oskern, int taskMemory, boolean autoAddress) {
+        super(name, version, architecture, oskern);
         this.taskMemory = taskMemory;
         currentTask = new ArrayList<>(taskMemory);
+        this.autoAddress = autoAddress;
+
+        if (autoAddress)
+        {
+            Random rnd = new Random();
+            address = 1000 + rnd.nextInt(10000);
+        }
+    }
+
+    public int generateAddress()
+    {
+        Random rnd = new Random();
+        int addr = 1000 + rnd.nextInt(10000);
+        return addr;
     }
 
     public void addDisk(String name, int maxLen, int blockSize)
@@ -121,6 +138,39 @@ public class MultiTaskOS extends OperatingSystem {
     public Application getApp(int aid)
     {
         return currentTask.get(aid);
+    }
+
+    public int getAddress()
+    {
+        return address;
+    }
+
+    @Override
+    public void connect(int address) {
+        int v = 0;
+        for (int i : addresses)
+        {
+            if (addresses.get(v) == address) {
+                break;
+            }
+            v++;
+        }
+        addresses.add(address);
+    }
+
+    @Override
+    public Application send(Application app, int osindex) {
+        int v = 0;
+        Application appli = null;
+        for (int i : addresses)
+        {
+            if (v == osindex)
+            {
+                appli = app;
+            }
+            v++;
+        }
+        return appli;
     }
 
     @Override
